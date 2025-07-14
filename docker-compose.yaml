@@ -15,7 +15,6 @@ services:
       - SKIP_DOMAIN_VALIDATION=${SKIP_DOMAIN_VALIDATION:-true}
       - NEXTCLOUD_DATADIR=${NEXTCLOUD_DATADIR:-/mnt/ncdata}
       - AIO_TOKEN=${AIO_TOKEN}
-      NEXTCLOUD_MOUNT="/mnt/"
       - COOLIFY_CONTAINER_NAME=nextcloud-aio-mastercontainer
     networks:
       - coolify
