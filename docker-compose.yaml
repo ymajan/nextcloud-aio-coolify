@@ -7,7 +7,7 @@ services:
     volumes:
       - 'nextcloud_aio_mastercontainer:/mnt/docker-aio-config'
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
-      - '/opt/nextcloud-aio/data:/mnt/ncdata:rw'
+      - '/mnt/jays-data/opt/nextcloud-aio/data:/mnt/ncdata:rw'
     ports:
       - '11000:8080'
     environment:
@@ -22,7 +22,7 @@ services:
     labels:
       - coolify.managed=true
       - traefik.enable=true
-      - traefik.http.routers.nextcloud-aio.rule=Host(`nextcloud.morain.fr`)
+      - traefik.http.routers.nextcloud-aio.rule=Host(`skygod.psimatic.io`)
       - traefik.http.routers.nextcloud-aio.tls.certresolver=letsencrypt
       - traefik.http.services.nextcloud-aio.loadbalancer.server.port=8080
 volumes:
