@@ -1,32 +1,32 @@
-version: '3.8'
+version: "3.8"
+
 services:
   nextcloud-aio-mastercontainer:
-    image: 'nextcloud/all-in-one:latest'
-    restart: always
-    container_name: nextcloud-aio-mastercontainer
+    image: nextcloud/all-in-one:latest
+    container_name: nextcloud-aio-mastercontainer   # Do NOT change
+    init: true
+    restart: unless-stopped
+    # AIO files + docker socket
     volumes:
-      - 'nextcloud_aio_mastercontainer:/mnt/docker-aio-config'
-      - '/var/run/docker.sock:/var/run/docker.sock:ro'
-      - '/mnt/jays-data/ncdata:/mnt/ncdata:rw'
+      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    # expose only the AIO setup UI
     ports:
-      - '33000:8080'
+      - "33001:8080"
     environment:
-      - APACHE_PORT=${APACHE_PORT:-33000}
-      - APACHE_IP_BINDING=${APACHE_IP_BINDING:-0.0.0.0}
-      - SKIP_DOMAIN_VALIDATION=${SKIP_DOMAIN_VALIDATION:-true}
-      - NEXTCLOUD_DATADIR=${NEXTCLOUD_DATADIR:-/mnt/ncdata}
-      - AIO_TOKEN=${AIO_TOKEN}
+      - APACHE_PORT=33000          # where final NC will listen
+      - APACHE_IP_BINDING=0.0.0.0  # listen on container IP so Traefik can reach it
+      - SKIP_DOMAIN_VALIDATION=true
+      - NEXTCLOUD_DATADIR=/mnt/jays-data/ncdata
     networks:
-      - coolify
-    labels:
+      - coolify                    # join Coolify’s Traefik network
+    labels:                        # let Coolify manage the container
       - coolify.managed=true
-      - traefik.enable=true
-      - traefik.http.routers.nextcloud-aio.rule=Host(`skygod.psimatic.io`)
-      - traefik.http.routers.nextcloud-aio.tls.certresolver=letsencrypt
-      - traefik.http.services.nextcloud-aio.loadbalancer.server.port=8080
+      # no Traefik labels here – explained below
+
 volumes:
   nextcloud_aio_mastercontainer:
-    name: nextcloud_aio_mastercontainer
+
 networks:
   coolify:
-    external: true
+    external: true                # this network already exists on every Coolify server
