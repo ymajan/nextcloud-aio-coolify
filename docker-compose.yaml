@@ -14,7 +14,7 @@ services:
     ports:
       - "33001:8080"
     environment:
-      - APACHE_PORT=33000          # where final NC will listen
+      - APACHE_PORT=11000          # where final NC will listen
       - APACHE_IP_BINDING=0.0.0.0  # listen on container IP so Traefik can reach it
       - SKIP_DOMAIN_VALIDATION=true
       - NEXTCLOUD_DATADIR=/mnt/jays-data/ncdata
