@@ -1,32 +1,29 @@
 version: "3.8"
-
 services:
   nextcloud-aio-mastercontainer:
     image: nextcloud/all-in-one:latest
-    container_name: nextcloud-aio-mastercontainer   # Do NOT change
+    container_name: nextcloud-aio-mastercontainer
     init: true
     restart: unless-stopped
-    # AIO files + docker socket
     volumes:
       - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    # expose only the AIO setup UI
+      - /mnt/jays-data:/mnt/jays-data  # Mount the data directory
     ports:
       - "8080:8080"
     environment:
-      - APACHE_PORT=11000          # where final NC will listen
-      - APACHE_IP_BINDING=0.0.0.0  # listen on container IP so Traefik can reach it
+      - APACHE_PORT=11000
+      - APACHE_IP_BINDING=0.0.0.0
       - SKIP_DOMAIN_VALIDATION=true
       - NEXTCLOUD_DATADIR=/mnt/jays-data/ncdata
     networks:
-      - coolify                    # join Coolify’s Traefik network
-    labels:                        # let Coolify manage the container
+      - coolify
+    labels:
       - coolify.managed=true
-      # no Traefik labels here – explained below
 
 volumes:
   nextcloud_aio_mastercontainer:
 
 networks:
   coolify:
-    external: true                # this network already exists on every Coolify server
+    external: true
